@@ -3,16 +3,20 @@ import React, { Component } from 'react';
 import {
   Image,
   TouchableHighlight,
+  FlatList,
   ScrollView,
   StyleSheet,
   View,
+  Text
 } from 'react-native';
 
 const apiKey = 'AIzaSyBQQJEp3x4ch3HUVWZHxCkh_DUOFO-K6ak';
-const channelId = 'PLGqEuVZwqpQklsEf9B_LkWMxhwtu3';
+const channelId = 'UClZuKq2m0Qu-HkopkSBLpEw';
 const results = 30;
 
 export default class Home extends Component {
+
+  ds = null
 
   constructor(props) {
     super(props);
@@ -22,7 +26,8 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    fetch(`https://www.googleapis.com/youtube/v3/search/?key=${apiKey}&playlistId=${channelId}&part=snippet,id&order=date&maxResults=${results}`)
+    const url = `https://www.googleapis.com/youtube/v3/search/?key=${apiKey}&part=snippet&order=rating&maxResults=${results}&videoCategoryId=10&type=video`
+    fetch(url)
       .then(res => res.json())
       .then((res) => {
         const videoId = [];
@@ -45,18 +50,25 @@ export default class Home extends Component {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.body}>
-            {data.map(item =>
+          {!data
+          ? <Text>Loading...</Text>
+          : <FlatList
+              data={data}
+              renderItem={({item}) => {
+                return(
+                  <View style={styles.row}>
+                    <Text numberOfLines={1}>{item.snippet.title}</Text>
+                  </View>
+                )
+              }}
+            />}
+            {/* {data.map(item =>
               <TouchableHighlight
                 key={item.id.videoId}
                 onPress={() => this.props.navigation.navigate('Player', { videoId: item.id.videoId })}>
-                <View style={styles.vids}>
-                  <Image
-                    source={{ uri: item.snippet.thumbnails.medium.url }}
-                    style={{ width: 320, height: 180 }}>
-                  </Image>
-                </View>
+                <Text>{item.snippet.title}</Text>
               </TouchableHighlight>
-            )}
+            )} */}
           </View>
         </ScrollView>
       </View>
@@ -70,19 +82,25 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: '#000',
     alignItems: 'center',
     //padding: 30
   },
   vids: {
     paddingBottom: 30,
-    width: 320,
     alignItems: 'center',
     justifyContent: 'space-around',
-    padding: 10
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: '#d6d7da',
   },
   vidText: {
     padding: 20,
     color: '#000'
+  },
+  row: {
+   margin: 10,
+  },
+  title: {
+    flex: 1
   }
 });
