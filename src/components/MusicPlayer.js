@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import {
   Player,
 } from 'react-native-audio-toolkit';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   StyleSheet,
   View,
-  Button,
+  Text,
+  TouchableOpacity
 } from 'react-native';
 
 export default class MusicPlayer extends Component {
@@ -20,11 +22,11 @@ export default class MusicPlayer extends Component {
 
   componentDidMount() {
 
-    const {videoId} = this.props;
-
-    fetch(`http://192.168.201.97:7777/api/get_video_stream_url/${videoId}`)
+    const { videoId } = this.props;
+    fetch(`http://192.168.201.112:7777/api/get_video_stream_url/${videoId}`)
       .then(response => response.json())
-      .then((responseJson)=> {
+      .then((responseJson) => {
+
 
         const player = new Player(responseJson.url)
 
@@ -32,14 +34,15 @@ export default class MusicPlayer extends Component {
           player
         });
       })
-      .catch(error=>{
+      .catch(error => {
+
       })
 
 
   }
 
-  onPlay() {
-    const {player} = this.state;
+  _onPlay() {
+    const { player } = this.state;
 
     if (player) {
       player.play()
@@ -47,8 +50,8 @@ export default class MusicPlayer extends Component {
 
   }
 
-  onPause() {
-    const {player} = this.state;
+  _onPause() {
+    const { player } = this.state;
 
     if (player) {
       player.pause()
@@ -56,20 +59,26 @@ export default class MusicPlayer extends Component {
   }
 
   render() {
+    const { player } = this.state;
     return (
       <View style={styles.container}>
-        <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
-          <Button
-            title='Play'
-            onPress={() => this.onPlay()}
-            color='red'
-          />
-          <Button
-            title='Pause'
-            onPress={() => this.onPause()}
-            color='red'
-          />
-        </View>
+        {!player ? <Text style={styles.loading}>Loading...</Text>
+          : <View style={{ flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-around' }}>
+            <TouchableOpacity onPress={() => this._onPlay()}>
+              <Icon
+                name="play-circle"
+                color="#3A506B"
+                size={70}>
+              </Icon>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this._onPause()}>
+              <Icon
+                name="pause-circle"
+                color="#3A506B"
+                size={70}>
+              </Icon>
+            </TouchableOpacity>
+          </View>}
       </View>
     );
   }
@@ -80,5 +89,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#0B132B'
   },
+  loading: {
+    color: '#6FFFE9'
+  }
 });

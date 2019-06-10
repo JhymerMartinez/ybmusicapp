@@ -1,17 +1,16 @@
 
 import React, { Component } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
-  Image,
-  TouchableHighlight,
   FlatList,
   ScrollView,
   StyleSheet,
   View,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 
 const apiKey = 'AIzaSyBQQJEp3x4ch3HUVWZHxCkh_DUOFO-K6ak';
-const channelId = 'UClZuKq2m0Qu-HkopkSBLpEw';
 const results = 30;
 
 export default class Home extends Component {
@@ -44,6 +43,8 @@ export default class Home extends Component {
       });
   }
 
+  _keyExtractor = (item, index) => item.id.videoId;
+
   render() {
     const { data } = this.state;
     return (
@@ -51,24 +52,21 @@ export default class Home extends Component {
         <ScrollView>
           <View style={styles.body}>
           {!data
-          ? <Text>Loading...</Text>
+          ? <Text style={styles.loading}>Loading...</Text>
           : <FlatList
               data={data}
-              renderItem={({item}) => {
+              keyExtractor={this._keyExtractor}
+              renderItem={({item, index}) => {
                 return(
-                  <View style={styles.row}>
-                    <Text numberOfLines={1}>{item.snippet.title}</Text>
-                  </View>
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Player', { videoId: item.id.videoId })}>
+                    <View style={styles.row}>
+                      <Icon name="play-circle" size={30} style={styles.icon} color="#3A506B" />
+                      <Text numberOfLines={1} style={styles.itemTitle}>{item.snippet.title}</Text>
+                    </View>
+                  </TouchableOpacity>
                 )
               }}
             />}
-            {/* {data.map(item =>
-              <TouchableHighlight
-                key={item.id.videoId}
-                onPress={() => this.props.navigation.navigate('Player', { videoId: item.id.videoId })}>
-                <Text>{item.snippet.title}</Text>
-              </TouchableHighlight>
-            )} */}
           </View>
         </ScrollView>
       </View>
@@ -78,29 +76,31 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   body: {
     flex: 1,
     alignItems: 'center',
-    //padding: 30
-  },
-  vids: {
-    paddingBottom: 30,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: '#d6d7da',
-  },
-  vidText: {
-    padding: 20,
-    color: '#000'
+    backgroundColor: '#0B132B'
   },
   row: {
    margin: 10,
+   flex: 1,
+   flexDirection: 'row',
+   alignItems: 'center'
   },
   title: {
     flex: 1
+  },
+  itemTitle: {
+    color: '#6FFFE9'
+  },
+  loading: {
+    color: '#6FFFE9'
+  },
+  icon: {
+    marginRight: 10
   }
 });
