@@ -1,0 +1,7 @@
+{
+  "name": "ybmusicapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
