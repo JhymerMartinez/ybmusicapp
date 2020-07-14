@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "ybmusicapp",
+  "appId": "com.gonzatech.ybmusic",
+  "appName": "YB Music",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
